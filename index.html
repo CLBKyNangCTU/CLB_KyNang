@@ -6,14 +6,14 @@
   <title>Hệ thống Quản lý CLB</title>
   <link id="favicon" rel="icon" type="image/jpeg" href="CLB.jpg">
   <style>
-    body, html { margin: 0; padding: 0; height: 100%; overflow: hidden; }
-    iframe { width: 100%; height: 100%; border: none; }
+    body, html { margin: 0; padding: 0; height: 100%; overflow: hidden; background: #0b192c; }
+    iframe { width: 100%; height: 100%; border: none; display: block; }
   </style>
   <script>
     window.addEventListener('load', function() {
       const img = new Image();
       img.onload = function() {
-        // Cắt sát vào đúng vòng tròn viền ngoài của ảnh CLB.jpg (bỏ lề trắng 4 cạnh)[cite: 6]
+        // Cắt sát vào đúng vòng tròn viền ngoài của ảnh CLB.jpg (bỏ lề trắng 4 cạnh)
         const trimRatio = 0.032; 
         const cropSize = Math.min(img.width, img.height) * (1 - trimRatio * 2);
         const startX = (img.width - cropSize) / 2;
@@ -41,6 +41,12 @@
   </script>
 </head>
 <body>
-  <iframe src="https://script.google.com/macros/s/AKfycbyaU0sTJFvmGNS0dsRed0OJylbHLt1-ZGhC6Pj21oHRR0YueSVi0bzm3KE6kEkXg1MYBQ/exec" allow="geolocation"></iframe>
+  <iframe id="appFrame" src="" allow="geolocation *"></iframe>
+
+  <script>
+    const APPS_SCRIPT_BASE_URL = "https://script.google.com/macros/s/AKfycbyaU0sTJFvmGNS0dsRed0OJylbHLt1-ZGhC6Pj21oHRR0YueSVi0bzm3KE6kEkXg1MYBQ/exec";
+    const queryParams = window.location.search;
+    document.getElementById("appFrame").src = APPS_SCRIPT_BASE_URL + queryParams;
+  </script>
 </body>
 </html>
