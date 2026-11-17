@@ -1,5 +1,5 @@
 {
-  "name": "CLB Kỹ Năng - Hệ Thống Quản Lý",
+  "name": "Hệ Thống Quản Lý - CLB Kỹ Năng",
   "short_name": "CLB Kỹ Năng",
   "start_url": "./index.html",
   "display": "standalone",
@@ -8,10 +8,10 @@
   "orientation": "portrait",
   "icons": [
     {
-      "src": "icon.png",
+      "src": "CLB.jpg",
       "sizes": "512x512",
-      "type": "image/png",
-      "purpose": "any maskable"
+      "type": "image/jpeg",
+      "purpose": "any"
     }
   ]
 }
