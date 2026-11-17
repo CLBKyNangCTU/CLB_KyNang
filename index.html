@@ -1,47 +1,87 @@
 <!DOCTYPE html>
-<html>
+<html lang="vi">
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Hệ thống Quản lý CLB</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <title>CLB Kỹ Năng - Hệ Thống Quản Lý</title>
+
+  <!-- Liên kết PWA cho Android & Trình duyệt -->
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#0b192c">
+
+  <!-- Cấu hình chạy toàn màn hình như App gốc trên iPhone / iPad (iOS) -->
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="CLB Kỹ Năng">
+
+  <!-- Icon mặc định & Icon màn hình chính iOS -->
   <link id="favicon" rel="icon" type="image/jpeg" href="CLB.jpg">
+  <link id="appleTouchIcon" rel="apple-touch-icon" href="CLB.jpg">
+
   <style>
-    body, html { margin: 0; padding: 0; height: 100%; overflow: hidden; background: #0b192c; }
-    iframe { width: 100%; height: 100%; border: none; display: block; }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    html, body {
+      width: 100%; height: 100%; overflow: hidden;
+      background: #0b192c;
+      /* Tránh nội dung bị che bởi tai thỏ / Dynamic Island trên iPhone */
+      padding-top: env(safe-area-inset-top);
+      padding-bottom: env(safe-area-inset-bottom);
+    }
+    iframe {
+      width: 100%; height: 100%; border: none; display: block;
+    }
   </style>
+
   <script>
     window.addEventListener('load', function() {
       const img = new Image();
       img.onload = function() {
-        // Cắt sát vào đúng vòng tròn viền ngoài của ảnh CLB.jpg (bỏ lề trắng 4 cạnh)
-        const trimRatio = 0.032; 
+        // Cắt sát viền trắng 4 cạnh của ảnh CLB.jpg
+        const trimRatio = 0.032;
         const cropSize = Math.min(img.width, img.height) * (1 - trimRatio * 2);
         const startX = (img.width - cropSize) / 2;
         const startY = (img.height - cropSize) / 2;
 
-        const canvas = document.createElement('canvas');
-        canvas.width = 256;
-        canvas.height = 256;
-        const ctx = canvas.getContext('2d');
+        // 1. Tạo Favicon hình tròn cho tab trình duyệt
+        const favCanvas = document.createElement('canvas');
+        favCanvas.width = 256;
+        favCanvas.height = 256;
+        const favCtx = favCanvas.getContext('2d');
+        favCtx.beginPath();
+        favCtx.arc(128, 128, 128, 0, Math.PI * 2);
+        favCtx.closePath();
+        favCtx.clip();
+        favCtx.drawImage(img, startX, startY, cropSize, cropSize, 0, 0, 256, 256);
 
-        // Tạo mặt nạ hình tròn khít viền
-        ctx.beginPath();
-        ctx.arc(128, 128, 128, 0, Math.PI * 2);
-        ctx.closePath();
-        ctx.clip();
-
-        // Vẽ phần logo đã cắt sát viền vào khung tròn
-        ctx.drawImage(img, startX, startY, cropSize, cropSize, 0, 0, 256, 256);
         const fav = document.getElementById('favicon');
         fav.type = 'image/png';
-        fav.href = canvas.toDataURL('image/png');
+        fav.href = favCanvas.toDataURL('image/png');
+
+        // 2. Tạo Icon vuông nền tối #0b192c cho màn hình chính iPhone (iOS tự bo góc vuông, không dùng nền trong suốt)
+        const iosCanvas = document.createElement('canvas');
+        iosCanvas.width = 512;
+        iosCanvas.height = 512;
+        const iosCtx = iosCanvas.getContext('2d');
+        iosCtx.fillStyle = '#0b192c';
+        iosCtx.fillRect(0, 0, 512, 512);
+        iosCtx.drawImage(img, startX, startY, cropSize, cropSize, 24, 24, 464, 464);
+
+        const appleIcon = document.getElementById('appleTouchIcon');
+        if (appleIcon) {
+          appleIcon.href = iosCanvas.toDataURL('image/png');
+        }
       };
       img.src = 'CLB.jpg';
     });
   </script>
 </head>
 <body>
-  <iframe id="appFrame" src="" allow="geolocation *"></iframe>
+  <iframe
+    id="appFrame"
+    src=""
+    allow="geolocation *; microphone *; camera *; clipboard-write *"
+    allowfullscreen>
+  </iframe>
 
   <script>
     const APPS_SCRIPT_BASE_URL = "https://script.google.com/macros/s/AKfycbyaU0sTJFvmGNS0dsRed0OJylbHLt1-ZGhC6Pj21oHRR0YueSVi0bzm3KE6kEkXg1MYBQ/exec";
