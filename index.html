@@ -5,16 +5,13 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
   <title>CLB Kỹ Năng - Hệ Thống Quản Lý</title>
 
-  <!-- Liên kết PWA cho Android & Trình duyệt -->
   <link rel="manifest" href="manifest.json">
   <meta name="theme-color" content="#0b192c">
 
-  <!-- Cấu hình chạy tràn viền toàn màn hình như App gốc trên iOS -->
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="CLB Kỹ Năng">
 
-  <!-- Icon mặc định & Icon màn hình chính iOS -->
   <link id="favicon" rel="icon" type="image/jpeg" href="CLB.jpg">
   <link id="appleTouchIcon" rel="apple-touch-icon" href="CLB.jpg">
 
@@ -33,7 +30,6 @@
       top: 0;
       left: 0;
       width: 100vw;
-      /* Cộng thêm phần đáy safe-area để phủ kín dải Home Indicator dưới cùng trên iPhone */
       height: calc(100vh + env(safe-area-inset-bottom, 34px));
       min-height: 100%;
       border: none;
@@ -45,13 +41,11 @@
     window.addEventListener('load', function() {
       const img = new Image();
       img.onload = function() {
-        // Cắt sát viền trắng 4 cạnh của ảnh CLB.jpg
         const trimRatio = 0.032;
         const cropSize = Math.min(img.width, img.height) * (1 - trimRatio * 2);
         const startX = (img.width - cropSize) / 2;
         const startY = (img.height - cropSize) / 2;
 
-        // 1. Tạo Favicon hình tròn cho tab trình duyệt
         const favCanvas = document.createElement('canvas');
         favCanvas.width = 256;
         favCanvas.height = 256;
@@ -66,7 +60,6 @@
         fav.type = 'image/png';
         fav.href = favCanvas.toDataURL('image/png');
 
-        // 2. Tạo Icon vuông nền tối #0b192c cho màn hình chính iPhone
         const iosCanvas = document.createElement('canvas');
         iosCanvas.width = 512;
         iosCanvas.height = 512;
@@ -76,9 +69,7 @@
         iosCtx.drawImage(img, startX, startY, cropSize, cropSize, 24, 24, 464, 464);
 
         const appleIcon = document.getElementById('appleTouchIcon');
-        if (appleIcon) {
-          appleIcon.href = iosCanvas.toDataURL('image/png');
-        }
+        if (appleIcon) appleIcon.href = iosCanvas.toDataURL('image/png');
       };
       img.src = 'CLB.jpg';
     });
@@ -96,6 +87,13 @@
     const APPS_SCRIPT_BASE_URL = "https://script.google.com/macros/s/AKfycbyaU0sTJFvmGNS0dsRed0OJylbHLt1-ZGhC6Pj21oHRR0YueSVi0bzm3KE6kEkXg1MYBQ/exec";
     const appFrame = document.getElementById("appFrame");
     appFrame.src = APPS_SCRIPT_BASE_URL + window.location.search;
+
+    // Lắng nghe lệnh đăng xuất từ bên trong iframe để tải lại đúng trang GitHub
+    window.addEventListener("message", function(event) {
+      if (event.data === "CLB_LOGOUT_RELOAD") {
+        window.location.href = window.location.origin + window.location.pathname;
+      }
+    });
 
     function fitFullScreenFrame() {
       const fullH = Math.max(window.innerHeight, document.documentElement.clientHeight, screen.height);
